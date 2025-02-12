@@ -6,15 +6,32 @@
         <field name="arch" type="xml">
             <form string="Fetch Product">
                 <group>
-                    <field name="search_product_name" placeholder="Enter product name..."/>
+                    <field name="search_product_name" placeholder="Enter product ean..."/>
+                </group>
+                <group>
+                    <field name="cover_image" widget="image" class="oe_avatar"/>
+
+                </group>
+                <group>
+                    <field name="title"/>
+                    <field name="raison_sociale"/>
+                    <field name="publisher"/>
+                    <field name="auth_name"/>
+                    <field name="auth_last_name"/>
+                    <field name="eans"/>
+                    <field name="price"/>
+                    <field name="flag_scolaire"/>
                 </group>
                 <footer>
-                    <button name="fetch_product_data" type="object" class="oe_highlight" string="Search Create"/>
+                    <button name="fetch_product_data" type="object" class="oe_highlight" string="Search"/>
                     <button string="Cancel" class="oe_secondary" special="cancel"/>
+                    <button name="create_product" string="Create Product" type="object"/>
+
                 </footer>
             </form>
         </field>
     </record>
+
 
     <record id="action_product_fetch_wizard" model="ir.actions.act_window">
         <field name="name">Fetch Product</field>
