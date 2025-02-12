@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="new_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="o" t-value="o.with_context(lang=lang)"/>
+
+                    <!-- Client & Invoice Details -->
+                    <div style="display:flex;float:right;padding:5px">
+                        <table class="table table-sm table-borderless mb-0" style="width: 100%; margin-bottom: 20px;background-color: #e7e9f4; color: black;">
+                            <tr>
+                                <td style="font-weight: bold; vertical-align: top; width: auto; text-align: left;">
+                                    <strong>Client :</strong>
+                                    <br/>
+                                    <span t-esc="o.partner_id.name"/>
+                                    <br/>
+                                    <span t-esc="o.partner_id.contact_address"/>
+                                    <br/>
+                                    Tel:
+                                    <span t-esc="o.partner_id.phone"/>
+                                    <br/>
+                                    TRN:
+                                    <span t-esc="o.partner_id.vat"/>
+                                </td>
+                                        <td style="width: 2%; background-color: #ffffff;"></td> <!-- White space column -->
+
+                                <td style=" vertical-align: top; width: auto; text-align: left;">
+                                    <strong>Invoice No:</strong>
+                                    <span t-esc="o.name"/>
+                                    <br/>
+                                    <strong>Date:</strong>
+                                    <span t-esc="o.invoice_date"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <!-- Itemized Product Table -->
+
+                    <table class="table table avoid-page-break-inside"
+                           style="width: 100%; margin-bottom: 20px; border: 1px black; border-collapse: collapse;">
+                        <thead style="background-color: #e7e9f4; color: black;"> <!-- Set background to black and text to white -->
+                            <tr>
+                                <th>Reference</th>
+                                <th>Title</th>
+                                <th>Qty.</th>
+                                <th>Price</th>
+                                <th>Disc.</th>
+                                <th>Net Price</th>
+                                <th>TVA%</th>
+                                <th>Amount T.T.C</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="total_discount" t-value="0"/>
+
+
+                            <t t-foreach="o.invoice_line_ids" t-as="line">
+                                <t t-set="total_discount"
+                                   t-value="total_discount + (line.price_unit * line.quantity * (line.discount / 100))"/>
+
+                                <tr>
+                                    <td>
+                                        <t t-esc="line.product_id.default_code or '-'"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.product_id.name"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.quantity"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.price_unit"/>
+                                    </td>
+                                    <td><t t-esc="line.discount"/>%
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.price_subtotal"/>
+                                    </td>
+                                    <td>
+                                        <t t-set="taxes"
+                                           t-value="', '.join([(tax.invoice_label or tax.name) for tax in line.tax_ids])"/>
+                                        <span t-out="taxes">0%</span>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.price_total"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" rowspan="8">
+                                </td>
+                                <td class="text-right" style="border: none;">Total Amount</td>
+                                <td>
+                                    <t t-esc="o.amount_untaxed"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Discount</td>
+                                <td>
+                                    <t t-esc="total_discount or 0.0"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Total HT</td>
+                                <td>
+                                    <t t-esc="o.amount_untaxed"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">TVA 11%</td>
+                                <td>
+                                    <t t-esc="o.amount_tax"/>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #e7e9f4">
+                                <td class="text-right">
+                                    <strong>Total TTC</strong>
+                                </td>
+                                <td>
+                                    <strong>
+                                        <t t-esc="o.amount_total"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div class="p-3">
+                        <span>
+                            <strong>Signature:</strong>
+                            <span style="margin-left:2%;border-bottom: 1px solid #000; width: 100px; display: inline-block;"/>
+
+                        </span>
+                        <span style="margin-left:8%;">
+                            <strong>Due Date:</strong>
+                            <span style="margin-left:2%;" t-esc="o.invoice_date_due"/>
+                        </span>
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
+
+
+
