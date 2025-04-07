@@ -5,10 +5,11 @@
     'category': 'Product',
     'summary': 'Auto-fill product fields before saving',
     'author': 'Ghaith',
-    'depends': ['product'],
+    'depends': ['product','account'],
     'data': [
         'security/ir.model.access.csv',
         'views/product_view.xml',
+        'views/account_move.xml',
         'wizard/fetch_product_view.xml',
     ],
     'installable': True,
